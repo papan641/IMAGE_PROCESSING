@@ -1,26 +1,46 @@
+import cv2
+import numpy as np
 from pymongo import MongoClient
 import gridfs
 
-# Step 1: Connect to MongoDB
+# Connect to MongoDB
 client = MongoClient("mongodb://localhost:27017/")
-db = client["image_database"]
-
-# Step 2: Create GridFS instance
+db = client["image_db"]
 fs = gridfs.GridFS(db)
 
-# Step 3: Path to the image
-image_path = "papan.jpg"  # Make sure papan.jpg is in the same folder
+# -------- STEP 1: Read and Store Image --------
+def save_image_to_db(image_path):
+    # Read image using OpenCV
+    img = cv2.imread(image_path)
+    if img is None:
+        print("❌ Image not found!")
+        return
 
-# Step 4: Save the image to MongoDB
-with open(image_path, "rb") as img_file:
-    image_id = fs.put(img_file, filename="papan.jpg", content_type="image/jpeg")
-    print(f"✅ Image uploaded successfully with ID: {image_id}")
+    # Convert to bytes
+    _, img_encoded = cv2.imencode('.jpg', img)
+    img_bytes = img_encoded.tobytes()
 
+    # Save to MongoDB
+    img_id = fs.put(img_bytes, filename="papan.jpg", content_type="image/jpeg")
+    print("✅ Image saved with ID:", img_id)
 
-# Step 5: Retrieve the image
-output_file = fs.get_last_version(filename="papan.jpg")
+# -------- STEP 2: Read Image from DB and Show --------
+def show_image_from_db(filename):
+    # Fetch image by filename
+    output = fs.get_last_version(filename)
+    image_bytes = output.read()
 
-# Step 6: Save to disk
-with open("downloaded_papan.jpg", "wb") as f:
-    f.write(output_file.read())
-    print("✅ Image retrieved and saved as 'downloaded_papan.jpg'")
+    # Convert to OpenCV format
+    nparr = np.frombuffer(image_bytes, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # Show image
+    cv2.imshow("Image from MongoDB", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+# ---------- MAIN ----------
+if __name__ == "__main__":
+    image_path = "papan.jpg"  # Make sure this file exists in the same folder
+    save_image_to_db(image_path)
+    show_image_from_db("papan.jpg")

@@ -9,3 +9,4 @@ if __name__ == "__main__":
     dictionary = {'name': 'harry', 'marks':45}
     collection.insert_one(dictionary)
 
+ggg

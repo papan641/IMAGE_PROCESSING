@@ -1,26 +1,26 @@
 from pymongo import MongoClient
 import gridfs
 
-# 1. Connect to MongoDB
+# Step 1: Connect to MongoDB
 client = MongoClient("mongodb://localhost:27017/")
 db = client["image_database"]
 
-# 2. Use GridFS
+# Step 2: Create GridFS instance
 fs = gridfs.GridFS(db)
 
-# 3. Path to the uploaded image
-image_path = "/mnt/data/papan.jpg"
+# Step 3: Path to the image
+image_path = "papan.jpg"  # Make sure papan.jpg is in the same folder
 
-# 4. Save the image to MongoDB
-with open(image_path, "rb") as image_file:
-    image_id = fs.put(image_file, filename="papan.jpg")
-    print("✅ Image saved successfully with ID:", image_id)
+# Step 4: Save the image to MongoDB
+with open(image_path, "rb") as img_file:
+    image_id = fs.put(img_file, filename="papan.jpg", content_type="image/jpeg")
+    print(f"✅ Image uploaded successfully with ID: {image_id}")
 
 
-# Retrieve the image from MongoDB by filename
-output_data = fs.get_last_version(filename="papan.jpg")
+# Step 5: Retrieve the image
+output_file = fs.get_last_version(filename="papan.jpg")
 
-# Save the retrieved image back to disk
-with open("downloaded_papan.jpg", "wb") as out_file:
-    out_file.write(output_data.read())
+# Step 6: Save to disk
+with open("downloaded_papan.jpg", "wb") as f:
+    f.write(output_file.read())
     print("✅ Image retrieved and saved as 'downloaded_papan.jpg'")

@@ -1,12 +1,14 @@
-import pymongo
+from pymongo import MongoClient
+import gridfs
 
-if __name__ == "__main__":
-    print("welcome to pyMongo")
-    client = pymongo.MongoClient("mongodb://localhost:27017")
-    print(client)
-    db = client['harry']
-    collection = db['mySampleCollectionForHarry']
-    dictionary = {'name': 'harry', 'marks':45}
-    collection.insert_one(dictionary)
+# 1. Connect to MongoDB
+client = MongoClient("mongodb://localhost:27017/")
+db = client["image_database"]
 
-ggg
+# 2. Use GridFS
+fs = gridfs.GridFS(db)
+
+# 3. Save Image to MongoDB
+with open("your_image.jpg", "rb") as image_file:
+    image_id = fs.put(image_file, filename="your_image.jpg")
+    print("Image saved with ID:", image_id)

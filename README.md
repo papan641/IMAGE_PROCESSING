@@ -1,1 +1,1 @@
-Store & Display Images in MongoDB using Python + OpenCV
+image upload and storage using Python, Flask, OpenCV, and MySQL.

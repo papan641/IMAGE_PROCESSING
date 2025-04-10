@@ -1,1 +1,1 @@
-image upload and storage using Python, Flask, OpenCV, and MySQL.
+image upload and storage using Python, OpenCV, and MySQL.

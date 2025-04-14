@@ -1,1 +1,1 @@
-image upload and storage using Python, OpenCV, and MySQL.
+Uploading and Downloading Images from MySQL Databases in Python

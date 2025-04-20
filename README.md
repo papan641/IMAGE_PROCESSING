@@ -19,3 +19,12 @@ user2
   .catch((err) => {
     console.log("Error saving user:", err);
   });
+
+
+// terminologies - collections, documents, schemas, keys, models
+
+
+code                      database
+mongoose.connect  -->    database create 
+model create      -->    collection
+CREATE CODE       -->    DOCUMENT
